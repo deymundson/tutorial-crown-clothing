@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
+  createUserWithEmailAndPassword,
   getAuth,
-  signInWithRedirect,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
@@ -22,12 +22,16 @@ const firebaseApp = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
 
-export const auth = getAuth();
+export const auth = getAuth(firebaseApp);
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
-export const db = getFirestore();
+export const db = getFirestore(firebaseApp);
 
-export const createUserFromAuth = async (userAuth) => {
+export const createUserFromAuth = async (userAuth, additionalInformation) => {
+  if (!userAuth) {
+    throw new Error("User auth is required");
+  }
+
   const userDocRef = doc(db, "users", userAuth.uid);
   const userSnapshot = await getDoc(userDocRef);
 
@@ -39,6 +43,7 @@ export const createUserFromAuth = async (userAuth) => {
         displayName,
         email,
         createdAt,
+        ...additionalInformation,
       });
     } catch (error) {
       console.error("Error creating user", error.message);
@@ -46,4 +51,12 @@ export const createUserFromAuth = async (userAuth) => {
   }
 
   return userDocRef;
+};
+
+export const createUserAuthFromEmail = async (email, password) => {
+  if (!email || !password) {
+    throw new Error("Email and password are required");
+  }
+
+  return await createUserWithEmailAndPassword(auth, email, password);
 };
