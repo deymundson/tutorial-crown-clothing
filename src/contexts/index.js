@@ -1,2 +1,3 @@
-export { UserContext } from "./user";
-export { UserProvider } from "./user";
+export { CartContext, CartProvider } from "./cart";
+export { ProductsContext, ProductsProvider } from "./products";
+export { UserContext, UserProvider } from "./user";
