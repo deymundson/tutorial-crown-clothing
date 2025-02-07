@@ -29,7 +29,7 @@ export const SignUpForm = () => {
 
     try {
       const { user } = await createUserAuthFromEmail(email, password);
-      createUserFromAuth(user, { displayName });
+      await createUserFromAuth(user, { displayName });
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         alert("Cannot create user, Email already in use");
@@ -53,14 +53,14 @@ export const SignUpForm = () => {
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Display Name"
-          id="displayName"
+          name="displayName"
           required
           onChange={handleChange}
           value={displayName}
         />
         <FormInput
           label="Email"
-          id="email"
+          name="email"
           type="email"
           required
           onChange={handleChange}
@@ -68,7 +68,7 @@ export const SignUpForm = () => {
         />
         <FormInput
           label="Password"
-          id="password"
+          name="password"
           type="password"
           required
           onChange={handleChange}
@@ -76,7 +76,7 @@ export const SignUpForm = () => {
         />
         <FormInput
           label="Confirm Password"
-          id="confirmPassword"
+          name="confirmPassword"
           type="password"
           required
           onChange={handleChange}
