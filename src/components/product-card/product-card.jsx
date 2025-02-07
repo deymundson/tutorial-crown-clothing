@@ -6,7 +6,7 @@ import "./product-card.scss";
 
 export const ProductCard = ({ product }) => {
   const { name, price, imageUrl } = product;
-  const { addItemToCart } = useContext(CartContext);
+  const { addProductToCart: addItemToCart } = useContext(CartContext);
 
   const handleClick = () => addItemToCart(product);
 
