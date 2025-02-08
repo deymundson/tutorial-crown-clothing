@@ -1,3 +1,3 @@
 export { CartContext, CartProvider } from "./cart";
-export { ProductsContext, ProductsProvider } from "./products";
+export { CategoriesContext, CategoriesProvider } from "./categories";
 export { UserContext, UserProvider } from "./user";
