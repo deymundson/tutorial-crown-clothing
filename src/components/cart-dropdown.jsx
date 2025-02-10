@@ -38,13 +38,13 @@ const EmptyMessage = styled.span`
 `;
 
 export const CartDropdown = () => {
-  const { hidden, hide, cartItems } = useContext(CartContext);
+  const { hidden, setHidden, cartItems } = useContext(CartContext);
   const navigate = useNavigate();
 
   if (hidden) return null;
 
   const onCheckout = () => {
-    hide();
+    setHidden(true);
     navigate("/checkout");
   };
 

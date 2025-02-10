@@ -27,7 +27,7 @@ const ItemCount = styled.span`
 `;
 
 export const CartIcon = () => {
-  const { toggleHidden, cartItems } = useContext(CartContext);
+  const { hidden, setHidden, cartItems } = useContext(CartContext);
 
   const itemCount = cartItems.reduce(
     (total, cartItem) => total + cartItem.quantity,
@@ -35,7 +35,7 @@ export const CartIcon = () => {
   );
 
   return (
-    <Container onClick={toggleHidden}>
+    <Container onClick={() => setHidden(!hidden)}>
       <ShoppingIcon className="shopping-icon" />
       <ItemCount>{itemCount}</ItemCount>
     </Container>

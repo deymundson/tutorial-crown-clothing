@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useReducer } from "react";
 
 const addProductToCartItems = (cartItems, product) => {
   const existingCartItem = cartItems.find((item) => item.id === product.id);
@@ -22,39 +22,66 @@ const removeItemFromCartItems = (cartItems, itemId) => {
 
 export const CartContext = createContext({
   hidden: true,
-  toggleHidden: () => {},
-  hide: () => {},
+  setHidden: () => {},
   cartItems: [],
   addProductToCart: () => {},
   removeItemFromCart: () => {},
   clearItemFromCart: () => {},
 });
 
+export const CART_ACTION_TYPES = {
+  SET_HIDDEN: "SET_HIDDEN",
+  SET_CART_ITEMS: "SET_CART_ITEMS",
+};
+
+const cartReducer = (state, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case CART_ACTION_TYPES.SET_HIDDEN:
+      return { ...state, hidden: payload };
+    case CART_ACTION_TYPES.SET_CART_ITEMS:
+      return { ...state, cartItems: payload };
+    default:
+      throw new Error(`Unhandled type in cartReducer: ${type}`);
+  }
+};
+
+const INITIAL_STATE = {
+  hidden: true,
+  cartItems: [],
+};
+
 export const CartProvider = ({ children }) => {
-  const [hidden, setHidden] = useState(true);
-  const [cartItems, setCartItems] = useState([]);
+  const [state, dispatch] = useReducer(cartReducer, INITIAL_STATE);
+  const { hidden, cartItems } = state;
 
-  const addProductToCart = (product) => {
-    setCartItems(addProductToCartItems(cartItems, product));
-  };
+  const addProductToCart = (product) =>
+    dispatch({
+      type: CART_ACTION_TYPES.SET_CART_ITEMS,
+      payload: addProductToCartItems(cartItems, product),
+    });
 
-  const removeItemFromCart = (item) => {
-    setCartItems(removeItemFromCartItems(cartItems, item.id));
-  };
+  const removeItemFromCart = (item) =>
+    dispatch({
+      type: CART_ACTION_TYPES.SET_CART_ITEMS,
+      payload: removeItemFromCartItems(cartItems, item.id),
+    });
 
-  const clearItemFromCart = (item) => {
-    setCartItems(cartItems.filter((cartItem) => cartItem.id !== item.id));
-  };
+  const clearItemFromCart = ({ id }) =>
+    dispatch({
+      type: CART_ACTION_TYPES.SET_CART_ITEMS,
+      payload: cartItems.filter((item) => item.id !== id),
+    });
 
-  const toggleHidden = () => setHidden(!hidden);
-  const hide = () => setHidden(true);
+  const setHidden = (newHidden) =>
+    dispatch({ type: CART_ACTION_TYPES.SET_HIDDEN, payload: newHidden });
 
   return (
     <CartContext.Provider
       value={{
         hidden,
-        toggleHidden,
-        hide,
+        setHidden,
         cartItems,
         addProductToCart,
         removeItemFromCart,
