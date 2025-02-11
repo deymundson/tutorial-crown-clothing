@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import { takeLatest, all, call, put } from "redux-saga/effects";
 import { getCategoriesAndDocuments } from "../backend/firebase";
 
 const CATEGORY_ACTION_TYPES = {
@@ -28,7 +29,7 @@ export const categoriesReducer = (state = INITIAL_STATE, action = {}) => {
   }
 };
 
-const fetchCategoriesStart = () => ({
+export const fetchCategoriesStart = () => ({
   type: CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_START,
 });
 
@@ -42,15 +43,25 @@ const fetchCategoriesFailure = (error) => ({
   payload: error,
 });
 
-export const fetchCategoriesAsync = () => async (dispatch) => {
-  dispatch(fetchCategoriesStart());
+function* fetchCategoriesAsync() {
   try {
-    const categories = await getCategoriesAndDocuments();
-    dispatch(fetchCategoriesSuccess(categories));
+    const categories = yield call(getCategoriesAndDocuments);
+    yield put(fetchCategoriesSuccess(categories));
   } catch (error) {
-    dispatch(fetchCategoriesFailure(error.message));
+    yield put(fetchCategoriesFailure(error.message));
   }
-};
+}
+
+function* onFetchCategoriesStart() {
+  yield takeLatest(
+    CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_START,
+    fetchCategoriesAsync
+  );
+}
+
+export function* categoriesSaga() {
+  yield all([call(onFetchCategoriesStart)]);
+}
 
 const selectCategories = createSelector(
   (state) => state.categories,

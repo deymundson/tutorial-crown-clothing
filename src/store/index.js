@@ -9,7 +9,7 @@ export {
   selectCartTotal,
 } from "./cart";
 export {
-  fetchCategoriesAsync,
+  fetchCategoriesStart,
   selectCategoriesByTitle,
   selectCategoriesLoading,
 } from "./categories";
