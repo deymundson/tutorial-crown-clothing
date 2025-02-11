@@ -1,7 +1,7 @@
-import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { CartContext } from "../contexts";
+import { setCartHidden, selectCartItems, selectCartHidden } from "../store";
 import { BaseButton, Button } from "./button";
 import { CartItem } from "./cart-item";
 
@@ -38,13 +38,16 @@ const EmptyMessage = styled.span`
 `;
 
 export const CartDropdown = () => {
-  const { hidden, setHidden, cartItems } = useContext(CartContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  if (hidden) return null;
+  const cartItems = useSelector(selectCartItems);
+  const cartHidden = useSelector(selectCartHidden);
+
+  if (cartHidden) return null;
 
   const onCheckout = () => {
-    setHidden(true);
+    dispatch(setCartHidden(true));
     navigate("/checkout");
   };
 

@@ -19,7 +19,7 @@ const App = () => {
       dispatch(setUser(user));
     });
     return unsubscribe;
-  }, [dispatch]);
+  }, []);
 
   return (
     <Routes>

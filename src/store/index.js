@@ -1,2 +1,13 @@
+export {
+  addItemToCart,
+  clearItemFromCart,
+  removeItemFromCart,
+  setCartHidden,
+  selectCartItems,
+  selectCartHidden,
+  selectCartCount,
+  selectCartTotal,
+} from "./cart";
+export { selectCategoriesByTitle, setCategories } from "./categories";
 export { selectUser, setUser } from "./user";
-export { store } from "./store";
+export { persistor, store } from "./store";

@@ -1,6 +1,11 @@
-import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { CartContext } from "../contexts";
+import {
+  addItemToCart,
+  removeItemFromCart,
+  clearItemFromCart,
+  selectCartItems,
+} from "../store";
 
 const ItemRow = styled.div`
   width: 100%;
@@ -45,14 +50,14 @@ const RemoveButton = styled.div`
 `;
 
 export const CheckoutItem = ({ item }) => {
+  const dispatch = useDispatch();
   const { name, imageUrl, price, quantity } = item;
 
-  const { addProductToCart, removeItemFromCart, clearItemFromCart } =
-    useContext(CartContext);
+  const cartItems = useSelector(selectCartItems);
 
-  const addItemHandler = () => addProductToCart(item);
-  const removeItemHandler = () => removeItemFromCart(item);
-  const clearItemHandler = () => clearItemFromCart(item);
+  const addItemHandler = () => dispatch(addItemToCart(cartItems, item));
+  const removeItemHandler = () => dispatch(removeItemFromCart(cartItems, item));
+  const clearItemHandler = () => dispatch(clearItemFromCart(cartItems, item));
 
   return (
     <ItemRow>

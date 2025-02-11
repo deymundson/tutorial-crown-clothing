@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import styled from "styled-components";
 import { ProductCard } from "../components";
-import { CategoriesContext } from "../contexts";
+import { selectCategoriesByTitle } from "../store";
 
 const Title = styled.h2`
   font-size: 28px;
@@ -20,7 +21,7 @@ const Container = styled.div`
 
 export const Category = () => {
   const { category } = useParams();
-  const { categories } = useContext(CategoriesContext);
+  const categories = useSelector(selectCategoriesByTitle);
 
   const [products, setProducts] = useState([]);
 

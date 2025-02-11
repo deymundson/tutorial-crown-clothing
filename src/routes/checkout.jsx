@@ -1,7 +1,7 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { CheckoutItem } from "../components";
-import { CartContext } from "../contexts";
+import { selectCartItems, selectCartTotal } from "../store";
 
 const Container = styled.div`
   width: 55%;
@@ -36,13 +36,8 @@ const Total = styled.span`
 `;
 
 export const Checkout = () => {
-  const { cartItems, addItemToCart, removeItemFromCart } =
-    useContext(CartContext);
-
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const cartItems = useSelector(selectCartItems);
+  const cartTotal = useSelector(selectCartTotal);
 
   return (
     <Container>
@@ -66,7 +61,7 @@ export const Checkout = () => {
       {cartItems.map((item) => (
         <CheckoutItem key={item.id} item={item} />
       ))}
-      <Total>Total: ${totalPrice}</Total>
+      <Total>Total: ${cartTotal}</Total>
     </Container>
   );
 };

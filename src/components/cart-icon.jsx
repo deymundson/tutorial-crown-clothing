@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { CartContext } from "../contexts";
+import { setCartHidden, selectCartHidden, selectCartCount } from "../store";
 
 import ShoppingBag from "../assets/shopping-bag.svg?react";
 
@@ -27,17 +27,15 @@ const ItemCount = styled.span`
 `;
 
 export const CartIcon = () => {
-  const { hidden, setHidden, cartItems } = useContext(CartContext);
+  const dispatch = useDispatch();
 
-  const itemCount = cartItems.reduce(
-    (total, cartItem) => total + cartItem.quantity,
-    0
-  );
+  const cartHidden = useSelector(selectCartHidden);
+  const cartCount = useSelector(selectCartCount);
 
   return (
-    <Container onClick={() => setHidden(!hidden)}>
+    <Container onClick={() => dispatch(setCartHidden(!cartHidden))}>
       <ShoppingIcon className="shopping-icon" />
-      <ItemCount>{itemCount}</ItemCount>
+      <ItemCount>{cartCount}</ItemCount>
     </Container>
   );
 };
