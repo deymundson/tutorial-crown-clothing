@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import styled from "styled-components";
-import { ProductCard } from "../components";
-import { selectCategoriesByTitle } from "../store";
+import { ProductCard, Spinner } from "../components";
+import { selectCategoriesByTitle, selectCategoriesLoading } from "../store";
 
 const Title = styled.h2`
   font-size: 28px;
@@ -22,6 +22,7 @@ const Container = styled.div`
 export const Category = () => {
   const { category } = useParams();
   const categories = useSelector(selectCategoriesByTitle);
+  const loading = useSelector(selectCategoriesLoading);
 
   const [products, setProducts] = useState([]);
 
@@ -29,14 +30,21 @@ export const Category = () => {
     setProducts(categories[category] || []);
   }, [categories, category]);
 
+  if (loading) {
+  }
+
   return (
     <>
       <Title>{category}</Title>
-      <Container>
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </Container>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Container>
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </Container>
+      )}
     </>
   );
 };

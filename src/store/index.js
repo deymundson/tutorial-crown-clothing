@@ -8,6 +8,10 @@ export {
   selectCartCount,
   selectCartTotal,
 } from "./cart";
-export { selectCategoriesByTitle, setCategories } from "./categories";
+export {
+  fetchCategoriesAsync,
+  selectCategoriesByTitle,
+  selectCategoriesLoading,
+} from "./categories";
 export { selectUser, setUser } from "./user";
 export { persistor, store } from "./store";
