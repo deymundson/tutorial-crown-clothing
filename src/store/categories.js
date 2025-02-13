@@ -1,62 +1,44 @@
+import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 import { takeLatest, all, call, put } from "redux-saga/effects";
 import { getCategoriesAndDocuments } from "../backend/firebase";
 
-const CATEGORY_ACTION_TYPES = {
-  FETCH_CATEGORIES_START: "FETCH_CATEGORIES_START",
-  FETCH_CATEGORIES_SUCCESS: "FETCH_CATEGORIES_SUCCESS",
-  FETCH_CATEGORIES_FAILURE: "FETCH_CATEGORIES_FAILURE",
-};
-
-const INITIAL_STATE = {
-  categories: [],
-  isLoading: false,
-  error: null,
-};
-
-export const categoriesReducer = (state = INITIAL_STATE, action = {}) => {
-  const { type, payload } = action;
-
-  switch (type) {
-    case CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_START:
-      return { ...state, isLoading: true };
-    case CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_SUCCESS:
-      return { ...state, categories: payload, isLoading: false };
-    case CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_FAILURE:
-      return { ...state, error: payload, isLoading: false };
-    default:
-      return state;
-  }
-};
-
-export const fetchCategoriesStart = () => ({
-  type: CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_START,
+const categoriesSlice = createSlice({
+  name: "categories",
+  initialState: {
+    categories: [],
+    isLoading: false,
+    error: null,
+  },
+  reducers: {
+    fetchCategoriesStart: (state) => {
+      state.isLoading = true;
+    },
+    fetchCategoriesSuccess: (state, action) => {
+      state.categories = action.payload;
+      state.isLoading = false;
+    },
+    fetchCategoriesFailure: (state, action) => {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+  },
 });
 
-const fetchCategoriesSuccess = (categories) => ({
-  type: CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_SUCCESS,
-  payload: categories,
-});
-
-const fetchCategoriesFailure = (error) => ({
-  type: CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_FAILURE,
-  payload: error,
-});
+export const categoriesReducer = categoriesSlice.reducer;
+export const { fetchCategoriesStart } = categoriesSlice.actions;
 
 function* fetchCategoriesAsync() {
   try {
     const categories = yield call(getCategoriesAndDocuments);
-    yield put(fetchCategoriesSuccess(categories));
+    yield put(categoriesSlice.actions.fetchCategoriesSuccess(categories));
   } catch (error) {
-    yield put(fetchCategoriesFailure(error.message));
+    yield put(categoriesSlice.actions.fetchCategoriesFailure(error.message));
   }
 }
 
 function* onFetchCategoriesStart() {
-  yield takeLatest(
-    CATEGORY_ACTION_TYPES.FETCH_CATEGORIES_START,
-    fetchCategoriesAsync
-  );
+  yield takeLatest(fetchCategoriesStart.type, fetchCategoriesAsync);
 }
 
 export function* categoriesSaga() {

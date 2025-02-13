@@ -1,11 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import {
-  addItemToCart,
-  removeItemFromCart,
-  clearItemFromCart,
-  selectCartItems,
-} from "../store";
+import { addItemToCart, removeItemFromCart, clearItemFromCart } from "../store";
 
 const ItemRow = styled.div`
   width: 100%;
@@ -53,11 +48,9 @@ export const CheckoutItem = ({ item }) => {
   const dispatch = useDispatch();
   const { name, imageUrl, price, quantity } = item;
 
-  const cartItems = useSelector(selectCartItems);
-
-  const addItemHandler = () => dispatch(addItemToCart(cartItems, item));
-  const removeItemHandler = () => dispatch(removeItemFromCart(cartItems, item));
-  const clearItemHandler = () => dispatch(clearItemFromCart(cartItems, item));
+  const addItemHandler = () => dispatch(addItemToCart(item));
+  const removeItemHandler = () => dispatch(removeItemFromCart(item));
+  const clearItemHandler = () => dispatch(clearItemFromCart(item));
 
   return (
     <ItemRow>

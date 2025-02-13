@@ -1,92 +1,54 @@
+import { createAction, createSlice } from "@reduxjs/toolkit";
 import { takeLatest, put, all, call } from "redux-saga/effects";
 import * as firebase from "../backend/firebase";
 
-const USER_ACTION_TYPES = {
-  CHECK_USER_SESSION: "CHECK_USER_SESSION",
-  GOOGLE_SIGN_IN_START: "GOOGLE_SIGN_IN_START",
-  EMAIL_SIGN_IN_START: "EMAIL_SIGN_IN_START",
-  SIGN_IN_SUCCESS: "SIGN_IN_SUCCESS",
-  SIGN_IN_FAILURE: "SIGN_IN_FAILURE",
-  SIGN_UP_START: "SIGN_UP_START",
-  SIGN_UP_SUCCESS: "SIGN_UP_SUCCESS",
-  SIGN_UP_FAILURE: "SIGN_UP_FAILURE",
-  SIGN_OUT_START: "SIGN_OUT_START",
-  SIGN_OUT_SUCCESS: "SIGN_OUT_SUCCESS",
-  SIGN_OUT_FAILURE: "SIGN_OUT_FAILURE",
-};
-
-const INITIAL_STATE = {
-  user: null,
-  isLoading: false,
-  error: null,
-};
-
-export const userReducer = (state = INITIAL_STATE, action = {}) => {
-  const { type, payload } = action;
-
-  switch (type) {
-    case USER_ACTION_TYPES.SIGN_IN_SUCCESS:
-      return { ...state, user: payload };
-    case USER_ACTION_TYPES.SIGN_OUT_SUCCESS:
-      return { ...state, user: null };
-    case USER_ACTION_TYPES.SIGN_IN_FAILURE:
-    case USER_ACTION_TYPES.SIGN_UP_FAILURE:
-    case USER_ACTION_TYPES.SIGN_OUT_FAILURE:
-      return { ...state, error: payload };
-    default:
-      return state;
-  }
-};
-
-export const checkUserSession = () => ({
-  type: USER_ACTION_TYPES.CHECK_USER_SESSION,
+const userSlice = createSlice({
+  name: "user",
+  initialState: {
+    user: null,
+    isLoading: false,
+    error: null,
+  },
+  reducers: {
+    signInSuccess: (state, action) => {
+      state.user = action.payload;
+    },
+    signOutSuccess: (state) => {
+      state.user = null;
+    },
+    signInFailure: (state, action) => {
+      state.error = action.payload;
+    },
+    signUpFailure: (state, action) => {
+      state.error = action.payload;
+    },
+    signOutFailure: (state, action) => {
+      state.error = action.payload;
+    },
+  },
 });
 
-export const googleSignInStart = () => ({
-  type: USER_ACTION_TYPES.GOOGLE_SIGN_IN_START,
-});
+export const userReducer = userSlice.reducer;
 
-export const emailSignInStart = (email, password) => ({
-  type: USER_ACTION_TYPES.EMAIL_SIGN_IN_START,
-  payload: { email, password },
-});
-
-export const signUpStart = (email, password, displayName) => ({
-  type: USER_ACTION_TYPES.SIGN_UP_START,
-  payload: { email, password, displayName },
-});
-
-export const signOutStart = () => ({
-  type: USER_ACTION_TYPES.SIGN_OUT_START,
-});
-
-const signInSuccess = (user) => ({
-  type: USER_ACTION_TYPES.SIGN_IN_SUCCESS,
-  payload: user,
-});
-
-const signInFailure = (error) => ({
-  type: USER_ACTION_TYPES.SIGN_IN_FAILURE,
-  payload: error,
-});
-
-const signUpSuccess = (userAuth, additionalInformation) => ({
-  type: USER_ACTION_TYPES.SIGN_UP_SUCCESS,
-  payload: { userAuth, additionalInformation },
-});
-
-const signUpFailure = (error) => ({
-  type: USER_ACTION_TYPES.SIGN_UP_FAILURE,
-  payload: error,
-});
-const signOutSuccess = () => ({
-  type: USER_ACTION_TYPES.SIGN_OUT_SUCCESS,
-});
-
-const signOutFailure = (error) => ({
-  type: USER_ACTION_TYPES.SIGN_OUT_FAILURE,
-  payload: error,
-});
+export const checkUserSession = createAction("user/checkUserSession");
+export const googleSignInStart = createAction("user/googleSignInStart");
+export const emailSignInStart = createAction(
+  "user/emailSignInStart",
+  (email, password) => ({ payload: { email, password } })
+);
+export const signUpStart = createAction(
+  "user/signUpStart",
+  (email, password, displayName) => ({
+    payload: { email, password, displayName },
+  })
+);
+export const signOutStart = createAction("user/signOutStart");
+const signUpSuccess = createAction(
+  "user/signUpSuccess",
+  (userAuth, additionalInformation) => ({
+    payload: { userAuth, additionalInformation },
+  })
+);
 
 export const selectUser = (state) => state.user.user;
 
@@ -97,9 +59,16 @@ function* getUserFromAuth(userAuth, additionalInformation) {
       userAuth,
       additionalInformation
     );
-    yield put(signInSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
+    const { displayName, email } = userSnapshot.data();
+    yield put(
+      userSlice.actions.signInSuccess({
+        id: userSnapshot.id,
+        displayName,
+        email,
+      })
+    );
   } catch (error) {
-    yield put(signInFailure(error.message));
+    yield put(userSlice.actions.signInFailure(error.message));
   }
 }
 
@@ -109,7 +78,7 @@ function* isUserAuthenticated() {
     if (!user) return;
     yield call(getUserFromAuth, user);
   } catch (error) {
-    yield put(signInFailure(error));
+    yield put(userSlice.actions.signInFailure(error));
   }
 }
 
@@ -119,7 +88,7 @@ function* signInWithEmail(action) {
     const { user } = yield call(firebase.signInWithEmail, email, password);
     yield call(getUserFromAuth, user);
   } catch (error) {
-    yield put(signInFailure(error));
+    yield put(userSlice.actions.signInFailure(error));
   }
 }
 
@@ -128,7 +97,7 @@ function* signInWithGoogle() {
     const { user } = yield call(firebase.signInWithGooglePopup);
     yield call(getUserFromAuth, user);
   } catch (error) {
-    yield put(signInFailure(error));
+    yield put(userSlice.actions.signInFailure(error));
   }
 }
 
@@ -142,7 +111,7 @@ function* signUp(action) {
     );
     yield put(signUpSuccess(user, { displayName }));
   } catch (error) {
-    yield put(signUpFailure(error));
+    yield put(userSlice.actions.signUpFailure(error));
   }
 }
 
@@ -154,34 +123,34 @@ function* signInAfterSignUp(action) {
 function* signOut() {
   try {
     yield call(firebase.signOutUser);
-    yield put(signOutSuccess());
+    yield put(userSlice.actions.signOutSuccess());
   } catch (error) {
-    yield put(signOutFailure(error));
+    yield put(userSlice.actions.signOutFailure(error));
   }
 }
 
 function* onCheckUserSession() {
-  yield takeLatest(USER_ACTION_TYPES.CHECK_USER_SESSION, isUserAuthenticated);
+  yield takeLatest(checkUserSession.type, isUserAuthenticated);
 }
 
 function* onEmailSignInStart() {
-  yield takeLatest(USER_ACTION_TYPES.EMAIL_SIGN_IN_START, signInWithEmail);
+  yield takeLatest(emailSignInStart.type, signInWithEmail);
 }
 
 function* onGoogleSignInStart() {
-  yield takeLatest(USER_ACTION_TYPES.GOOGLE_SIGN_IN_START, signInWithGoogle);
+  yield takeLatest(googleSignInStart.type, signInWithGoogle);
 }
 
 function* onSignUpStart() {
-  yield takeLatest(USER_ACTION_TYPES.SIGN_UP_START, signUp);
+  yield takeLatest(signUpStart.type, signUp);
 }
 
 function* onSignUpSuccess() {
-  yield takeLatest(USER_ACTION_TYPES.SIGN_UP_SUCCESS, signInAfterSignUp);
+  yield takeLatest(signUpSuccess.type, signInAfterSignUp);
 }
 
 function* onSignOutStart() {
-  yield takeLatest(USER_ACTION_TYPES.SIGN_OUT_START, signOut);
+  yield takeLatest(signOutStart.type, signOut);
 }
 
 export function* userSaga() {

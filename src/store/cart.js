@@ -1,77 +1,54 @@
+import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 
-export const CART_ACTION_TYPES = {
-  SET_HIDDEN: "SET_HIDDEN",
-  SET_CART_ITEMS: "SET_CART_ITEMS",
-};
-
-const INITIAL_STATE = {
-  hidden: true,
-  cartItems: [],
-};
-
-export const cartReducer = (state = INITIAL_STATE, action = {}) => {
-  const { type, payload } = action;
-
-  switch (type) {
-    case CART_ACTION_TYPES.SET_HIDDEN:
-      return { ...state, hidden: payload };
-    case CART_ACTION_TYPES.SET_CART_ITEMS:
-      return { ...state, cartItems: payload };
-    default:
-      return state;
-  }
-};
-
-export const addItemToCart = (cartItems, product) => {
-  const newCartItems = (() => {
-    const existingCartItem = cartItems.find((item) => item.id === product.id);
-    if (existingCartItem) {
-      return cartItems.map((item) =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+const cartSlice = createSlice({
+  name: "cart",
+  initialState: {
+    hidden: true,
+    cartItems: [],
+  },
+  reducers: {
+    addItemToCart: (state, action) => {
+      const product = action.payload;
+      const existingCartItem = state.cartItems.find(
+        (item) => item.id === product.id
       );
-    }
-
-    return [...cartItems, { ...product, quantity: 1 }];
-  })();
-
-  return {
-    type: CART_ACTION_TYPES.SET_CART_ITEMS,
-    payload: newCartItems,
-  };
-};
-
-export const removeItemFromCart = (cartItems, item) => {
-  const newCartItems = (() => {
-    const existingCartItem = cartItems.find((i) => i.id === item.id);
-    if (existingCartItem.quantity === 1) {
-      return cartItems.filter((i) => i.id !== item.id);
-    }
-
-    return cartItems.map((i) =>
-      i.id === item.id ? { ...i, quantity: i.quantity - 1 } : i
-    );
-  })();
-
-  return {
-    type: CART_ACTION_TYPES.SET_CART_ITEMS,
-    payload: newCartItems,
-  };
-};
-
-export const clearItemFromCart = (cartItems, item) => {
-  const newCartItems = cartItems.filter((i) => i.id !== item.id);
-
-  return {
-    type: CART_ACTION_TYPES.SET_CART_ITEMS,
-    payload: newCartItems,
-  };
-};
-
-export const setCartHidden = (hidden) => ({
-  type: CART_ACTION_TYPES.SET_HIDDEN,
-  payload: hidden,
+      if (existingCartItem) {
+        existingCartItem.quantity += 1;
+      } else {
+        state.cartItems.push({ ...product, quantity: 1 });
+      }
+    },
+    clearItemFromCart: (state, action) => {
+      const item = action.payload;
+      state.cartItems = state.cartItems.filter((i) => i.id !== item.id);
+    },
+    removeItemFromCart: (state, action) => {
+      const item = action.payload;
+      const existingCartItem = state.cartItems.find((i) => i.id === item.id);
+      if (existingCartItem.quantity > 1) {
+        existingCartItem.quantity -= 1;
+      } else {
+        state.cartItems = state.cartItems.filter((i) => i.id !== item.id);
+      }
+    },
+    setCartHidden: (state, action) => {
+      state.hidden = action.payload;
+    },
+    setCartItems: (state, action) => {
+      state.cartItems = action.payload;
+    },
+  },
 });
+
+export const cartReducer = cartSlice.reducer;
+
+export const {
+  addItemToCart,
+  clearItemFromCart,
+  removeItemFromCart,
+  setCartHidden,
+} = cartSlice.actions;
 
 export const selectCartItems = createSelector(
   (state) => state.cart,
