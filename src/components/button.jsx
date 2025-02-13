@@ -15,6 +15,7 @@ export const BaseButton = styled.button`
   cursor: pointer;
   display: flex;
   justify-content: center;
+  align-items: center;
 
   &:hover {
     background-color: white;
@@ -48,13 +49,38 @@ const InvertedButton = styled(BaseButton)`
   }
 `;
 
+const Spinner = styled.div`
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(195, 195, 195, 0.6);
+  border-radius: 50%;
+  border-top-color: #636767;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+  @keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+`;
+
 const BUTTON_TYPES = {
   google: GoogleSignInButton,
   inverted: InvertedButton,
   default: DefaultButton,
 };
 
-export const Button = ({ buttonType, children, ...otherProps }) => {
+export const Button = ({ buttonType, children, isLoading, ...otherProps }) => {
   const ButtonComponent = BUTTON_TYPES[buttonType || "default"];
-  return <ButtonComponent {...otherProps}>{children}</ButtonComponent>;
+  return (
+    <ButtonComponent disabled={isLoading} {...otherProps}>
+      {isLoading ? <Spinner /> : children}
+    </ButtonComponent>
+  );
 };
