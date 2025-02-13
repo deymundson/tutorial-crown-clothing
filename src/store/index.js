@@ -13,5 +13,12 @@ export {
   selectCategoriesByTitle,
   selectCategoriesLoading,
 } from "./categories";
-export { selectUser, setUser } from "./user";
+export {
+  checkUserSession,
+  emailSignInStart,
+  googleSignInStart,
+  selectUser,
+  signOutStart,
+  signUpStart,
+} from "./user";
 export { persistor, store } from "./store";

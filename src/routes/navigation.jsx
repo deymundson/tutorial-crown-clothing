@@ -1,10 +1,9 @@
 import { Fragment } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet, Link } from "react-router";
 import styled from "styled-components";
-import { signOutUser } from "../backend/firebase";
 import { CartIcon, CartDropdown } from "../components";
-import { selectUser } from "../store";
+import { selectUser, signOutStart } from "../store";
 
 import CrownLogo from "../assets/crown.svg?react";
 
@@ -37,7 +36,10 @@ const NavLink = styled(Link)`
 `;
 
 export const Navigation = () => {
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
+
+  const handleSignOut = () => dispatch(signOutStart());
 
   return (
     <Fragment>
@@ -48,7 +50,7 @@ export const Navigation = () => {
         <NavLinksContainer>
           <NavLink to="/shop">Shop</NavLink>
           {user ? (
-            <NavLink as="span" onClick={signOutUser}>
+            <NavLink as="span" onClick={handleSignOut}>
               Sign out
             </NavLink>
           ) : (
