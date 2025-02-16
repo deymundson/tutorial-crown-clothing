@@ -27,18 +27,21 @@ export const store = configureStore({
     },
     rootReducer
   ),
-  middleware: (getDefaultMiddleware) =>
-    [
-      process.env.NODE_ENV === "development" && logger,
-      sagaMiddleware,
-      ...getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
-    ].filter(Boolean),
+  middleware: (getDefaultMiddleware) => {
+    const middleware = getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    });
+    if (process.env.NODE_ENV === "development") {
+      middleware.push(logger);
+    }
+    middleware.push(sagaMiddleware);
+    return middleware;
+  },
 });
 
 sagaMiddleware.run(rootSaga);
 
+export type RootState = ReturnType<typeof rootReducer>;
 export const persistor = persistStore(store);

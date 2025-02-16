@@ -1,14 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
+import { CategoryItem } from "./categories";
+import { RootState } from "./store";
+
+export type CartItem = CategoryItem & {
+  quantity: number;
+};
+
+export type CartState = {
+  hidden: boolean;
+  cartItems: CartItem[];
+};
+
+const initialState: CartState = {
+  hidden: true,
+  cartItems: [],
+};
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState: {
-    hidden: true,
-    cartItems: [],
-  },
+  initialState: initialState,
   reducers: {
-    addItemToCart: (state, action) => {
+    addItemToCart: (state, action: PayloadAction<CategoryItem>) => {
       const product = action.payload;
       const existingCartItem = state.cartItems.find(
         (item) => item.id === product.id
@@ -19,24 +32,21 @@ const cartSlice = createSlice({
         state.cartItems.push({ ...product, quantity: 1 });
       }
     },
-    clearItemFromCart: (state, action) => {
+    clearItemFromCart: (state, action: PayloadAction<CartItem>) => {
       const item = action.payload;
       state.cartItems = state.cartItems.filter((i) => i.id !== item.id);
     },
-    removeItemFromCart: (state, action) => {
+    removeItemFromCart: (state, action: PayloadAction<CartItem>) => {
       const item = action.payload;
       const existingCartItem = state.cartItems.find((i) => i.id === item.id);
-      if (existingCartItem.quantity > 1) {
+      if (existingCartItem && existingCartItem.quantity > 1) {
         existingCartItem.quantity -= 1;
       } else {
         state.cartItems = state.cartItems.filter((i) => i.id !== item.id);
       }
     },
-    setCartHidden: (state, action) => {
+    setCartHidden: (state, action: PayloadAction<boolean>) => {
       state.hidden = action.payload;
-    },
-    setCartItems: (state, action) => {
-      state.cartItems = action.payload;
     },
   },
 });
@@ -51,12 +61,12 @@ export const {
 } = cartSlice.actions;
 
 export const selectCartItems = createSelector(
-  (state) => state.cart,
+  [(state: RootState) => state.cart],
   (cart) => cart.cartItems
 );
 
 export const selectCartHidden = createSelector(
-  (state) => state.cart,
+  [(state: RootState) => state.cart],
   (cart) => cart.hidden
 );
 

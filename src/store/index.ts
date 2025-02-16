@@ -22,3 +22,5 @@ export {
   signUpStart,
 } from "./user";
 export { persistor, store } from "./store";
+
+export type { Category } from "./categories";
