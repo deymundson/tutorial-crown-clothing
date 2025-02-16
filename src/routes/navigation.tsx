@@ -35,7 +35,13 @@ const NavLink = styled(Link)`
   text-transform: uppercase;
 `;
 
-export const Navigation = () => {
+const SignOutLink = styled.span`
+  padding: 10px 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+`;
+
+export const Navigation = (): JSX.Element => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
 
@@ -50,9 +56,9 @@ export const Navigation = () => {
         <NavLinksContainer>
           <NavLink to="/shop">Shop</NavLink>
           {user ? (
-            <NavLink as="span" onClick={handleSignOut}>
+            <SignOutLink as="span" onClick={handleSignOut}>
               Sign out
-            </NavLink>
+            </SignOutLink>
           ) : (
             <NavLink to="/auth">Sign in</NavLink>
           )}

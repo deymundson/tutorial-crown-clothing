@@ -23,4 +23,5 @@ export {
 } from "./user";
 export { persistor, store } from "./store";
 
-export type { Category } from "./categories";
+export type { CartItem } from "./cart";
+export type { Category, CategoryItem } from "./categories";

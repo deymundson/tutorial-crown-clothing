@@ -3,7 +3,11 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import styled from "styled-components";
 import { ProductCard, Spinner } from "../components";
-import { selectCategoriesByTitle, selectCategoriesLoading } from "../store";
+import {
+  selectCategoriesByTitle,
+  selectCategoriesLoading,
+  CategoryItem,
+} from "../store";
 
 const Title = styled.h2`
   font-size: 28px;
@@ -19,12 +23,16 @@ const Container = styled.div`
   row-gap: 50px;
 `;
 
-export const Category = () => {
-  const { category } = useParams();
+type RouteParams = {
+  category: string;
+};
+
+export const Category = (): JSX.Element => {
+  const { category } = useParams<RouteParams>() as RouteParams;
   const categories = useSelector(selectCategoriesByTitle);
   const loading = useSelector(selectCategoriesLoading);
 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<CategoryItem[]>([]);
 
   useEffect(() => {
     setProducts(categories[category] || []);

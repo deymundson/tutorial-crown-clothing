@@ -5,7 +5,7 @@ import { fetchCategoriesStart } from "../store";
 import { CategoriesPreview } from "./categories-preview";
 import { Category } from "./category";
 
-export const Shop = () => {
+export const Shop = (): JSX.Element => {
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -1,7 +1,12 @@
 import { useNavigate } from "react-router";
 import styled from "styled-components";
+import { Category } from "./directory";
 
-const BackgroundImage = styled.div`
+type BackgroundImageProps = {
+  $imageUrl: string;
+};
+
+const BackgroundImage = styled.div<BackgroundImageProps>`
   width: 100%;
   height: 100%;
   background-size: cover;
@@ -68,7 +73,11 @@ const Container = styled.div`
   }
 `;
 
-export const DirectoryItem = ({ category }) => {
+type Props = {
+  category: Category;
+};
+
+export const DirectoryItem = ({ category }: Props): JSX.Element => {
   const { title, imageUrl, route } = category;
   const navigate = useNavigate();
 

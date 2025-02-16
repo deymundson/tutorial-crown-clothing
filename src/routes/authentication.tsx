@@ -8,7 +8,7 @@ const Container = styled.div`
   margin: 30px auto;
 `;
 
-export const Authentication = () => {
+export const Authentication = (): JSX.Element => {
   return (
     <Container>
       <SignInForm />

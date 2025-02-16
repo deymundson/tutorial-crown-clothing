@@ -26,7 +26,7 @@ const ItemCount = styled.span`
   bottom: 12px;
 `;
 
-export const CartIcon = () => {
+export const CartIcon = (): JSX.Element => {
   const dispatch = useDispatch();
 
   const cartHidden = useSelector(selectCartHidden);

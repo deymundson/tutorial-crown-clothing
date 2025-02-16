@@ -8,7 +8,14 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-const categories = [
+export type Category = {
+  id: number;
+  title: string;
+  imageUrl: string;
+  route: string;
+};
+
+const categories: Category[] = [
   {
     id: 1,
     title: "hats",
@@ -41,7 +48,7 @@ const categories = [
   },
 ];
 
-export const Directory = () => {
+export const Directory = (): JSX.Element => {
   return (
     <Container>
       {categories.map((category) => (

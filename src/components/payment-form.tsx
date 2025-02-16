@@ -1,5 +1,5 @@
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Button } from "./button";
@@ -23,7 +23,7 @@ const PaymentButton = styled(Button)`
   margin-top: 30px;
 `;
 
-export const PaymentForm = () => {
+export const PaymentForm = (): JSX.Element => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -31,7 +31,7 @@ export const PaymentForm = () => {
   const user = useSelector(selectUser);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
@@ -49,10 +49,15 @@ export const PaymentForm = () => {
     }).then((res) => res.json());
 
     const clientSecret = response.paymentIntent.client_secret;
-    console.log(clientSecret);
+
+    const cardDetails = elements.getElement(CardElement);
+    if (!cardDetails) {
+      throw new Error("Card Element not found");
+    }
+
     const paymentResult = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: elements.getElement(CardElement),
+        card: cardDetails,
         billing_details: {
           name: user?.displayName || "guest",
         },

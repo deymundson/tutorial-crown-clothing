@@ -1,3 +1,4 @@
+import { InputHTMLAttributes } from "react";
 import styled, { css } from "styled-components";
 
 const subColor = "grey";
@@ -14,7 +15,11 @@ const Container = styled.div`
   margin: 45px 0;
 `;
 
-const Label = styled.label`
+type LabelProps = {
+  $shrink: boolean;
+};
+
+const Label = styled.label<LabelProps>`
   color: ${subColor};
   font-size: 16px;
   font-weight: normal;
@@ -53,15 +58,16 @@ const Input = styled.input`
   }
 `;
 
-export const FormInput = ({ label, id, ...inputProps }) => {
+type Props = InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+  value: string;
+};
+
+export const FormInput = ({ label, ...inputProps }: Props): JSX.Element => {
   return (
     <Container>
-      <Input id={id} name={id} {...inputProps} />
-      {label && (
-        <Label $shrink={!!inputProps.value.length} htmlFor={id}>
-          {label}
-        </Label>
-      )}
+      <Input {...inputProps} />
+      {label && <Label $shrink={!!inputProps.value.length}>{label}</Label>}
     </Container>
   );
 };

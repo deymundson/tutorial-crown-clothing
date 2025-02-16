@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { CategoryPreview, Spinner } from "../components";
 import { selectCategoriesByTitle, selectCategoriesLoading } from "../store";
 
-export const CategoriesPreview = () => {
+export const CategoriesPreview = (): JSX.Element => {
   const categories = useSelector(selectCategoriesByTitle);
   const loading = useSelector(selectCategoriesLoading);
 

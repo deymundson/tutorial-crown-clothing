@@ -29,7 +29,7 @@ const SpinnerContainer = styled.div`
   }
 `;
 
-export const Spinner = () => (
+export const Spinner = (): JSX.Element => (
   <SpinnerOverlay>
     <SpinnerContainer />
   </SpinnerOverlay>

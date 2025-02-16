@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { addItemToCart } from "../store";
+import { addItemToCart, CategoryItem } from "../store";
 import { Button } from "./button";
 
 const Container = styled.div`
@@ -55,7 +55,11 @@ const Footer = styled.div`
   }
 `;
 
-export const ProductCard = ({ product }) => {
+type Props = {
+  product: CategoryItem;
+};
+
+export const ProductCard = ({ product }: Props): JSX.Element => {
   const dispatch = useDispatch();
   const { name, price, imageUrl } = product;
 

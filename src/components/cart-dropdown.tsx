@@ -37,7 +37,7 @@ const EmptyMessage = styled.span`
   margin: 50px auto;
 `;
 
-export const CartDropdown = () => {
+export const CartDropdown = (): JSX.Element | null => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

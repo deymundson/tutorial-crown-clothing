@@ -1,6 +1,11 @@
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { addItemToCart, removeItemFromCart, clearItemFromCart } from "../store";
+import {
+  addItemToCart,
+  removeItemFromCart,
+  clearItemFromCart,
+  CartItem,
+} from "../store";
 
 const ItemRow = styled.div`
   width: 100%;
@@ -44,7 +49,11 @@ const RemoveButton = styled.div`
   cursor: pointer;
 `;
 
-export const CheckoutItem = ({ item }) => {
+type Props = {
+  item: CartItem;
+};
+
+export const CheckoutItem = ({ item }: Props): JSX.Element => {
   const dispatch = useDispatch();
   const { name, imageUrl, price, quantity } = item;
 

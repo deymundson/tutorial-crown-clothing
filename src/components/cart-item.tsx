@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { CartItem as CartItemData } from "../store";
 
 const Container = styled.div`
   width: 100%;
@@ -23,7 +24,11 @@ const Name = styled.span`
   font-size: 16px;
 `;
 
-export const CartItem = ({ cartItem }) => {
+type Props = {
+  cartItem: CartItemData;
+};
+
+export const CartItem = ({ cartItem }: Props): JSX.Element => {
   const { name, imageUrl, price, quantity } = cartItem;
   return (
     <Container>

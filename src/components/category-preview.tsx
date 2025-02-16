@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import styled from "styled-components";
+import { CategoryItem } from "../store";
 import { ProductCard } from "./product-card";
 
 const Container = styled.div`
@@ -21,7 +22,12 @@ const ProductsContainer = styled.div`
   column-gap: 20px;
 `;
 
-export const CategoryPreview = ({ title, products }) => {
+type Props = {
+  title: string;
+  products: CategoryItem[];
+};
+
+export const CategoryPreview = ({ title, products }: Props): JSX.Element => {
   return (
     <Container>
       <h2>

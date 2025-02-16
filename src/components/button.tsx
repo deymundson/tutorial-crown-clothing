@@ -1,3 +1,4 @@
+import { ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
 
 export const BaseButton = styled.button`
@@ -76,7 +77,17 @@ const BUTTON_TYPES = {
   default: DefaultButton,
 };
 
-export const Button = ({ buttonType, children, isLoading, ...otherProps }) => {
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+  buttonType?: "google" | "inverted" | "default";
+  isLoading?: boolean;
+};
+
+export const Button = ({
+  buttonType,
+  children,
+  isLoading,
+  ...otherProps
+}: Props): JSX.Element => {
   const ButtonComponent = BUTTON_TYPES[buttonType || "default"];
   return (
     <ButtonComponent disabled={isLoading} {...otherProps}>

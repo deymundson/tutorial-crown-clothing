@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router";
 import { Authentication, Checkout, Home, Navigation, Shop } from "./routes";
 import { checkUserSession } from "./store";
 
-const App = () => {
+const App = (): JSX.Element => {
   const dispatch = useDispatch();
 
   useEffect(() => {
