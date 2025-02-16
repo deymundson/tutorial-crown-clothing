@@ -35,7 +35,7 @@ const Total = styled.span`
   font-size: 36px;
 `;
 
-export const Checkout = (): JSX.Element => {
+const Checkout = (): JSX.Element => {
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotal);
 
@@ -66,3 +66,5 @@ export const Checkout = (): JSX.Element => {
     </Container>
   );
 };
+
+export default Checkout;

@@ -41,7 +41,7 @@ const SignOutLink = styled.span`
   text-transform: uppercase;
 `;
 
-export const Navigation = (): JSX.Element => {
+const Navigation = (): JSX.Element => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
 
@@ -70,3 +70,5 @@ export const Navigation = (): JSX.Element => {
     </Fragment>
   );
 };
+
+export default Navigation;

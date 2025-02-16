@@ -1,5 +1,7 @@
 import { Directory } from "../components";
 
-export const Home = (): JSX.Element => {
+const Home = (): JSX.Element => {
   return <Directory />;
 };
+
+export default Home;

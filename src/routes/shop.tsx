@@ -5,7 +5,7 @@ import { fetchCategoriesStart } from "../store";
 import { CategoriesPreview } from "./categories-preview";
 import { Category } from "./category";
 
-export const Shop = (): JSX.Element => {
+const Shop = (): JSX.Element => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -19,3 +19,5 @@ export const Shop = (): JSX.Element => {
     </Routes>
   );
 };
+
+export default Shop;
