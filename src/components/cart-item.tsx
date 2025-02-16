@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styled from "styled-components";
 import { CartItem as CartItemData } from "../store";
 
@@ -28,7 +29,7 @@ type Props = {
   cartItem: CartItemData;
 };
 
-export const CartItem = ({ cartItem }: Props): JSX.Element => {
+export const CartItem = memo(({ cartItem }: Props): JSX.Element => {
   const { name, imageUrl, price, quantity } = cartItem;
   return (
     <Container>
@@ -41,4 +42,4 @@ export const CartItem = ({ cartItem }: Props): JSX.Element => {
       </ItemDetails>
     </Container>
   );
-};
+});

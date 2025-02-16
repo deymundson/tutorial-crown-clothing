@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import {
@@ -53,7 +54,7 @@ type Props = {
   item: CartItem;
 };
 
-export const CheckoutItem = ({ item }: Props): JSX.Element => {
+export const CheckoutItem = memo(({ item }: Props): JSX.Element => {
   const dispatch = useDispatch();
   const { name, imageUrl, price, quantity } = item;
 
@@ -76,4 +77,4 @@ export const CheckoutItem = ({ item }: Props): JSX.Element => {
       <RemoveButton onClick={clearItemHandler}>&#10005;</RemoveButton>
     </ItemRow>
   );
-};
+});
