@@ -22,7 +22,7 @@ type CategoriesState = {
   error: Error | null;
 };
 
-const initialState: CategoriesState = {
+export const initialState: CategoriesState = {
   categories: [],
   isLoading: false,
   error: null,
@@ -47,9 +47,13 @@ const categoriesSlice = createSlice({
 });
 
 export const categoriesReducer = categoriesSlice.reducer;
-export const { fetchCategoriesStart } = categoriesSlice.actions;
+export const {
+  fetchCategoriesStart,
+  fetchCategoriesFailure,
+  fetchCategoriesSuccess,
+} = categoriesSlice.actions;
 
-function* fetchCategoriesAsync() {
+export function* fetchCategoriesAsync() {
   try {
     const categories = yield* call(getCategoriesAndDocuments);
     yield* put(categoriesSlice.actions.fetchCategoriesSuccess(categories));
@@ -58,7 +62,7 @@ function* fetchCategoriesAsync() {
   }
 }
 
-function* onFetchCategoriesStart() {
+export function* onFetchCategoriesStart() {
   yield* takeLatest(fetchCategoriesStart.type, fetchCategoriesAsync);
 }
 
@@ -66,7 +70,7 @@ export function* categoriesSaga() {
   yield* all([call(onFetchCategoriesStart)]);
 }
 
-const selectCategories = createSelector(
+export const selectCategories = createSelector(
   [(state: RootState) => state.categories],
   (categoriesSlice) => categoriesSlice.categories
 );

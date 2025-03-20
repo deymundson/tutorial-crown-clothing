@@ -30,7 +30,7 @@ const SpinnerContainer = styled.div`
 `;
 
 export const Spinner = (): JSX.Element => (
-  <SpinnerOverlay>
+  <SpinnerOverlay data-testid="spinner">
     <SpinnerContainer />
   </SpinnerOverlay>
 );

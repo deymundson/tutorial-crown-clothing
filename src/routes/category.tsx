@@ -38,9 +38,6 @@ export const Category = (): JSX.Element => {
     setProducts(categories[category] || []);
   }, [categories, category]);
 
-  if (loading) {
-  }
-
   return (
     <>
       <Title>{category}</Title>
